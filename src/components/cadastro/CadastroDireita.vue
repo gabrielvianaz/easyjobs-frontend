@@ -1,20 +1,20 @@
 <template>
-  <div class="esquerda col p-0 d-flex flex-column align-items-center">
+  <div class="direita col p-0 d-flex flex-column align-items-center">
     <img class="logo" src="@/assets/img/logo-laranja.svg" alt="" />
     <div class="content d-flex flex-column justify-content-center">
       <div class="content-wrapper shadow">
         <div class="header">
-          <h1>Login</h1>
-          <p>Seja bem-vindo novamente!</p>
+          <h1>Cadastro</h1>
+          <p>Crie sua conta e junte-se a nós!</p>
         </div>
-        <form class="login-form" ref="loginForm">
+        <form class="cadastro-form" ref="cadastroForm">
           <ImputWithLabel
             class="email"
             label="Email:"
             type="email"
             id="email"
             name="email"
-            placeholder="Digite seu e-mail"
+            placeholder="Insira seu e-mail"
             v-model="credenciais.email"
             ref="emailInput"
           />
@@ -24,18 +24,25 @@
             type="password"
             id="senha"
             name="senha"
-            placeholder="Digite sua senha"
+            placeholder="Crie sua senha"
             v-model="credenciais.senha"
             ref="senhaInput"
           />
-          <p class="esqueci text-end">
-            <CallToAction to="/login" text="Esqueci a senha" />
-          </p>
-          <DefaultButton text="Acessar" @click.prevent="login()" v-if="!carregando" />
+          <ImputWithLabel
+            class="confirmacao-senha"
+            label="Confirmação da senha:"
+            type="password"
+            id="confirmacao-senha"
+            name="confirmacao-senha"
+            placeholder="Confirme a senha digitada"
+            v-model="confirmacaoSenha"
+            ref="confirmacaoSenhaInput"
+          />
+          <DefaultButton text="Cadastrar" @click.prevent="cadastrar()" v-if="!carregando" />
           <LoadingButton v-else />
         </form>
         <p class="msg-cadastro text-center">
-          Não possui uma conta? <CallToAction to="/cadastro" text="Cadastre-se" />
+          Já possui uma conta? <CallToAction to="/login" text="Faça login" />
         </p>
       </div>
     </div>
@@ -59,10 +66,12 @@ const credenciais = ref<Credenciais>({
 })
 const emailInput = ref(null)
 const senhaInput = ref(null)
-const loginForm: Ref<HTMLFormElement | null> = ref(null)
+const confirmacaoSenhaInput = ref(null)
+const cadastroForm: Ref<HTMLFormElement | null> = ref(null)
+const confirmacaoSenha = ref('')
 const carregando = ref(false)
 
-async function login() {
+async function cadastrar() {
   try {
     validarCampos()
   } catch (e) {
@@ -70,9 +79,9 @@ async function login() {
   }
   carregando.value = true
   await api
-    .post('/login', credenciais.value)
+    .post('/cadastro', credenciais.value)
     .then(() => router.push('/'))
-    .catch((e) => handleErroLogin(e.response.data))
+    .catch((e) => handleErroCadastro(e.response.data))
   carregando.value = false
 }
 
@@ -80,6 +89,7 @@ function validarCampos() {
   removerMsgErro()
   validarEmail()
   validarSenha()
+  validarConfirmacaoSenha()
 }
 
 function validarEmail() {
@@ -104,6 +114,17 @@ function validarSenha() {
   }
 }
 
+function validarConfirmacaoSenha() {
+  if (confirmacaoSenha.value.length === 0) {
+    erroConfirmacaoSenha('Insira a confirmação da senha!')
+    throw Error('Insira a confirmação da senha!')
+  }
+  if (confirmacaoSenha.value != credenciais.value.senha) {
+    erroConfirmacaoSenha('As senhas informadas são diferentes!')
+    throw Error('As senhas informadas são diferentes!')
+  }
+}
+
 function erroEmail(mensagem: string) {
   const div: HTMLDivElement = (emailInput.value as any).$el
   div.classList.add('erro')
@@ -116,9 +137,14 @@ function erroSenha(mensagem: string) {
   div.appendChild(gerarMsgErro(mensagem))
 }
 
-function handleErroLogin(erro: any) {
-  if (erro.status === 401) return erroSenha(erro.mensagem)
-  if (erro.status === 404) return erroEmail(erro.mensagem)
+function erroConfirmacaoSenha(mensagem: string) {
+  const div: HTMLDivElement = (confirmacaoSenhaInput.value as any).$el
+  div.classList.add('erro')
+  div.appendChild(gerarMsgErro(mensagem))
+}
+
+function handleErroCadastro(erro: any) {
+  if (erro.status === 409) return erroEmail(erro.mensagem)
 }
 </script>
 
@@ -149,12 +175,12 @@ p {
   border-radius: 10px;
 }
 
-.login-form {
+.cadastro-form {
   margin-top: 30px;
 }
 
 .esqueci {
-  margin-top: 10px;
+  margin: 10px 0 30px 0;
 }
 
 /* Responsivo */

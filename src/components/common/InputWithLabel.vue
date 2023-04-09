@@ -64,11 +64,19 @@ label {
   background-image: url('@/assets/img/icons/senha.svg');
 }
 
+.input-wrapper.confirmacao-senha::before {
+  background-image: url('@/assets/img/icons/confirmacao-senha.svg');
+}
+
 .input-with-label.erro .input-wrapper.email::before {
   background-image: url('@/assets/img/icons/email-erro.svg');
 }
 .input-with-label.erro .input-wrapper.senha::before {
   background-image: url('@/assets/img/icons/senha-erro.svg');
+}
+
+.input-with-label.erro .input-wrapper.confirmacao-senha::before {
+  background-image: url('@/assets/img/icons/confirmacao-senha-erro.svg');
 }
 
 input {

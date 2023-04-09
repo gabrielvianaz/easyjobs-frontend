@@ -1,5 +1,5 @@
 <template>
-  <section class="login container-fluid d-grid">
+  <section class="login container-fluid d-grid animate__animated animate__fadeIn">
     <div class="row">
       <LoginEsquerda />
       <LoginDireita />

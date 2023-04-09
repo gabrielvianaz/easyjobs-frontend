@@ -14,6 +14,7 @@ button {
   color: #fff !important;
   border-radius: 5px;
   font-weight: 600;
+  margin: 30px 0;
 }
 
 span.spinner-border {

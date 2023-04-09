@@ -1,0 +1,19 @@
+<template>
+  <section class="login container-fluid d-grid">
+    <div class="row">
+      <LoginEsquerda />
+      <LoginDireita />
+    </div>
+  </section>
+</template>
+
+<script lang="ts" setup>
+import LoginEsquerda from '@/components/login/LoginEsquerda.vue'
+import LoginDireita from '@/components/login/LoginDireita.vue'
+</script>
+
+<style scoped>
+.login {
+  height: 100%;
+}
+</style>

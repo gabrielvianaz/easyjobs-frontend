@@ -1,0 +1,25 @@
+<template>
+  <button>{{ text }}</button>
+</template>
+
+<script lang="ts" setup>
+defineProps(['text'])
+</script>
+
+<style scoped>
+button {
+  width: 100%;
+  height: 40px;
+  background: #f97c09;
+  color: #fff;
+  border: 3px solid #f97c09;
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+button:focus,
+button:hover {
+  outline: none;
+  opacity: 0.75;
+}
+</style>

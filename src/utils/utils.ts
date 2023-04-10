@@ -14,9 +14,15 @@ export function gerarMsgErro(erro: string) {
   return msgErro
 }
 
+export function exibirErro(mensagem: string, target: HTMLElement) {
+  target.classList.add('erro')
+  target.appendChild(gerarMsgErro(mensagem))
+  throw Error(mensagem)
+}
+
 export function removerMsgErro() {
-  const divErro = document.querySelector('.erro')
-  if (divErro) divErro.classList.remove('erro')
-  const msgErro = document.querySelector('.msg-erro')
-  if (msgErro) msgErro.remove()
+  const erroList = document.querySelectorAll('.erro')
+  if (erroList.length) erroList.forEach((item) => item.classList.remove('erro'))
+  const msgErroList = document.querySelectorAll('.msg-erro')
+  if (msgErroList.length) msgErroList.forEach((item) => item.remove())
 }

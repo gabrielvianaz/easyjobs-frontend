@@ -1,9 +1,9 @@
 <template>
-  <button>{{ text }}</button>
+  <button :disabled="disabled">{{ text }}</button>
 </template>
 
 <script lang="ts" setup>
-defineProps(['text'])
+defineProps(['text', 'disabled'])
 </script>
 
 <style scoped>
@@ -19,7 +19,8 @@ button {
 }
 
 button:focus,
-button:hover {
+button:hover,
+button:disabled {
   outline: none;
   opacity: 0.75;
 }

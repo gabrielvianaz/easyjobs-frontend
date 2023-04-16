@@ -12,10 +12,14 @@ body,
   font-family: 'Montserrat', sans-serif;
 }
 
+section {
+  height: 100%;
+}
+
 .msg-erro {
   color: red;
   font-size: 0.875rem;
-  margin: 10px 0 0 0;
+  margin: 5px 0 0 0;
   text-align: start;
   font-weight: 600;
 }

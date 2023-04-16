@@ -1,12 +1,3 @@
-export function senhaValida(senha: string) {
-  return senha.length >= 8
-}
-
-export function emailValido(email: string) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
-}
-
 export function gerarMsgErro(erro: string) {
   const msgErro: HTMLParagraphElement = document.createElement('p')
   msgErro.classList.add('msg-erro')
@@ -14,9 +5,11 @@ export function gerarMsgErro(erro: string) {
   return msgErro
 }
 
-export function exibirErro(mensagem: string, target: HTMLElement) {
+export function exibirMsgErro(mensagem: string, target: HTMLElement) {
   target.classList.add('erro')
   target.appendChild(gerarMsgErro(mensagem))
+  target.querySelector('input')?.focus()
+  target.querySelector('select')?.focus()
   throw Error(mensagem)
 }
 

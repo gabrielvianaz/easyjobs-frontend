@@ -35,7 +35,7 @@
         v-model="confirmacaoSenha"
         ref="confirmacaoSenhaInput"
       />
-      <DefaultButton text="Cadastrar" @click.prevent="cadastrar()" v-if="!carregando" />
+      <DefaultButton text="Cadastrar" @click.prevent="handleClickCadastro" v-if="!carregando" />
       <LoadingButton v-else />
     </form>
     <p class="msg-login text-center">
@@ -45,7 +45,6 @@
 </template>
 
 <script lang="ts" setup>
-import { removerMsgErro, emailValido, senhaValida, exibirErro } from '@/utils/utils'
 import { ref, type Ref } from 'vue'
 import { api } from '@/api/config'
 import ImputWithLabel from '@/components/common/InputWithLabel.vue'
@@ -53,6 +52,8 @@ import DefaultButton from '../common/DefaultButton.vue'
 import LoadingButton from '../common/LoadingButton.vue'
 import CallToAction from '../common/CallToAction.vue'
 import type { Credenciais } from '@/types/Credenciais'
+import { exibirMsgErro, removerMsgErro } from '@/utils/msgErro'
+import { emailValido, senhaValida } from '@/utils/validacoes'
 
 const credenciais: Ref<Credenciais> = ref({
   email: '',
@@ -66,21 +67,26 @@ const carregando = ref(false)
 
 const emit = defineEmits(['setCredenciais', 'exibirAtivacao'])
 
-async function cadastrar() {
+function handleClickCadastro() {
   try {
     validarCampos()
+    cadastrar()
   } catch (e) {
     return console.log((e as Error).message)
   }
-  carregando.value = true
-  await api
-    .post('/cadastro', credenciais.value)
-    .then(() => {
-      emit('setCredenciais', credenciais.value)
-      emit('exibirAtivacao')
-    })
-    .catch((e) => erroCadastroHandler(e.response.data))
-  carregando.value = false
+}
+
+async function cadastrar() {
+  try {
+    carregando.value = true
+    await api.post('/cadastro', credenciais.value)
+    emit('setCredenciais', credenciais.value)
+    emit('exibirAtivacao')
+  } catch (e) {
+    return erroCadastroHandler((e as any).response.data)
+  } finally {
+    carregando.value = false
+  }
 }
 
 function validarCampos() {
@@ -119,17 +125,17 @@ function validarConfirmacaoSenha() {
 
 function erroEmail(mensagem: string) {
   const div: HTMLDivElement = (emailInput.value as any).$el
-  exibirErro(mensagem, div)
+  exibirMsgErro(mensagem, div)
 }
 
 function erroSenha(mensagem: string) {
   const div: HTMLDivElement = (senhaInput.value as any).$el
-  exibirErro(mensagem, div)
+  exibirMsgErro(mensagem, div)
 }
 
 function erroConfirmacaoSenha(mensagem: string) {
   const div: HTMLDivElement = (confirmacaoSenhaInput.value as any).$el
-  exibirErro(mensagem, div)
+  exibirMsgErro(mensagem, div)
 }
 
 function erroCadastroHandler(erro: any) {

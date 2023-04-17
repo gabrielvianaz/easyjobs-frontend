@@ -30,7 +30,7 @@
       v-if="!carregandoRenovacao"
     >
       Reenviar código
-      {{ tempoRestante > 0 ? `em ${formatarMinutos()}:${formatarSegundos()}` : '' }}
+      {{ tempoRestante > 0 ? `em ${formatarTempoRestante()}` : '' }}
     </p>
     <LoadingSpinner v-else />
   </div>
@@ -38,9 +38,10 @@
 
 <script lang="ts" setup>
 import { api } from '@/api/config'
-import router from '@/router'
+import login from '@/functions/login'
 import type { Ativacao } from '@/types/Ativacao'
-import { gerarMsgErro, removerMsgErro } from '@/utils/utils'
+import { formatarMinutosRestantes, formatarSegundosRestantes } from '@/utils/format'
+import { gerarMsgErro, removerMsgErro } from '@/utils/msgErro'
 import { ref, onMounted, computed, type Ref } from 'vue'
 import DefaultButton from '../common/DefaultButton.vue'
 import LoadingButton from '../common/LoadingButton.vue'
@@ -75,16 +76,10 @@ function iniciarContador() {
   }, 1000)
 }
 
-function formatarMinutos() {
-  return Math.floor(tempoRestante.value / 60)
-    .toString()
-    .padStart(2, '0')
-}
-
-function formatarSegundos() {
-  return Math.floor(tempoRestante.value % 60)
-    .toString()
-    .padStart(2, '0')
+function formatarTempoRestante() {
+  return `${formatarMinutosRestantes(tempoRestante.value)}:${formatarSegundosRestantes(
+    tempoRestante.value
+  )}`
 }
 
 async function renovar() {
@@ -102,7 +97,7 @@ async function ativar() {
       ...ativacao.value,
       codigo: codigo.value.join('')
     })
-    .then(() => router.push('/'))
+    .then(() => login(props.credenciais))
     .catch((e) => {
       erroAtivacao(e.response.data.mensagem)
       carregandoAtivacao.value = false

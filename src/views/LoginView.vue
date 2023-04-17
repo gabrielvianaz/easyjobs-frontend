@@ -11,9 +11,3 @@
 import LoginEsquerda from '@/components/login/LoginEsquerda.vue'
 import LoginDireita from '@/components/login/LoginDireita.vue'
 </script>
-
-<style scoped>
-.login {
-  height: 100%;
-}
-</style>

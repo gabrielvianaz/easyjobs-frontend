@@ -11,9 +11,3 @@
 import CadastroEsquerda from '@/components/cadastro/CadastroEsquerda.vue'
 import CadastroDireita from '@/components/cadastro/CadastroDireita.vue'
 </script>
-
-<style scoped>
-.cadastro {
-  height: 100%;
-}
-</style>

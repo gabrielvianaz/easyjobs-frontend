@@ -8,6 +8,7 @@
         :id="id"
         :placeholder="placeholder"
         :value="modelValue"
+        :maxlength="maxLength"
         @input="modelUpdate"
       />
     </div>
@@ -15,11 +16,28 @@
 </template>
 
 <script lang="ts" setup>
-defineProps(['label', 'type', 'name', 'id', 'class', 'placeholder', 'modelValue'])
+const props = defineProps([
+  'label',
+  'type',
+  'name',
+  'id',
+  'class',
+  'placeholder',
+  'maxLength',
+  'numerico',
+  'modelValue'
+])
 const emit = defineEmits(['update:modelValue'])
 
 function modelUpdate(event: Event) {
-  emit('update:modelValue', (event.target as HTMLInputElement).value)
+  const target = event.target as HTMLInputElement
+  if (props.numerico) validarValorNumerico(target)
+  emit('update:modelValue', target.value)
+}
+
+function validarValorNumerico(target: HTMLInputElement) {
+  const valorDigitado = target.value[target.value.length - 1]
+  if (isNaN(Number(valorDigitado))) target.value = target.value.replace(valorDigitado, '')
 }
 </script>
 
@@ -68,6 +86,30 @@ label {
   background-image: url('@/assets/img/icons/confirmacao-senha.svg');
 }
 
+.input-wrapper.candidato::before {
+  background-image: url('@/assets/img/icons/candidato.svg');
+}
+
+.input-wrapper.cnpj::before {
+  background-image: url('@/assets/img/icons/cnpj.svg');
+}
+
+.input-wrapper.cpf::before {
+  background-image: url('@/assets/img/icons/cpf.svg');
+}
+
+.input-wrapper.data::before {
+  background-image: url('@/assets/img/icons/data.svg');
+}
+
+.input-wrapper.nome-fantasia::before {
+  background-image: url('@/assets/img/icons/nome-fantasia.svg');
+}
+
+.input-wrapper.razao-social::before {
+  background-image: url('@/assets/img/icons/razao-social.svg');
+}
+
 .input-with-label.erro .input-wrapper.email::before {
   background-image: url('@/assets/img/icons/email-erro.svg');
 }
@@ -77,6 +119,30 @@ label {
 
 .input-with-label.erro .input-wrapper.confirmacao-senha::before {
   background-image: url('@/assets/img/icons/confirmacao-senha-erro.svg');
+}
+
+.input-with-label.erro .input-wrapper.candidato::before {
+  background-image: url('@/assets/img/icons/candidato-erro.svg');
+}
+
+.input-with-label.erro .input-wrapper.cnpj::before {
+  background-image: url('@/assets/img/icons/cnpj-erro.svg');
+}
+
+.input-with-label.erro .input-wrapper.cpf::before {
+  background-image: url('@/assets/img/icons/cpf-erro.svg');
+}
+
+.input-with-label.erro .input-wrapper.data::before {
+  background-image: url('@/assets/img/icons/data-erro.svg');
+}
+
+.input-with-label.erro .input-wrapper.nome-fantasia::before {
+  background-image: url('@/assets/img/icons/nome-fantasia-erro.svg');
+}
+
+.input-with-label.erro .input-wrapper.razao-social::before {
+  background-image: url('@/assets/img/icons/razao-social-erro.svg');
 }
 
 input {

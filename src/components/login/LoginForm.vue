@@ -25,7 +25,7 @@
         v-model="credenciais.senha"
         ref="senhaInput"
       />
-      <DefaultButton text="Acessar" @click.prevent="login()" v-if="!carregando" />
+      <DefaultButton text="Acessar" @click.prevent="handleClickLogin" v-if="!carregando" />
       <LoadingButton v-else />
     </form>
     <p class="msg-cadastro text-center">
@@ -35,15 +35,17 @@
 </template>
 
 <script lang="ts" setup>
-import { removerMsgErro, emailValido, senhaValida, exibirErro } from '@/utils/utils'
 import { ref, type Ref } from 'vue'
-import { api } from '@/api/config'
 import ImputWithLabel from '@/components/common/InputWithLabel.vue'
 import DefaultButton from '../common/DefaultButton.vue'
 import LoadingButton from '../common/LoadingButton.vue'
 import CallToAction from '../common/CallToAction.vue'
 import type { Credenciais } from '@/types/Credenciais'
 import router from '@/router'
+import { exibirMsgErro, removerMsgErro } from '@/utils/msgErro'
+import { emailValido, senhaValida } from '@/utils/validacoes'
+import { useUsuarioStore } from '@/stores/usuario'
+import login from '@/functions/login'
 
 const credenciais: Ref<Credenciais> = ref({
   email: '',
@@ -52,21 +54,29 @@ const credenciais: Ref<Credenciais> = ref({
 const emailInput = ref(null)
 const senhaInput = ref(null)
 const carregando = ref(false)
+const store = useUsuarioStore()
 
 const emit = defineEmits(['setCredenciais', 'exibirAtivacao'])
 
-async function login() {
+function handleClickLogin() {
   try {
     validarCampos()
+    efetuarLogin()
   } catch (e) {
     return console.log((e as Error).message)
   }
-  carregando.value = true
-  await api
-    .post('/login', credenciais.value)
-    .then(() => router.push('/'))
-    .catch((e) => erroLoginHandler(e.response.data))
-  carregando.value = false
+}
+
+async function efetuarLogin() {
+  try {
+    carregando.value = true
+    await login(credenciais.value)
+    if (store.get?.tipoVinculo) router.push('/')
+  } catch (e) {
+    erroLoginHandler((e as any).response.data)
+  } finally {
+    carregando.value = false
+  }
 }
 
 function validarCampos() {
@@ -95,12 +105,12 @@ function validarSenha() {
 
 function erroEmail(mensagem: string) {
   const div: HTMLDivElement = (emailInput.value as any).$el
-  exibirErro(mensagem, div)
+  exibirMsgErro(mensagem, div)
 }
 
 function erroSenha(mensagem: string) {
   const div: HTMLDivElement = (senhaInput.value as any).$el
-  exibirErro(mensagem, div)
+  exibirMsgErro(mensagem, div)
 }
 
 function erroLoginHandler(erro: any) {

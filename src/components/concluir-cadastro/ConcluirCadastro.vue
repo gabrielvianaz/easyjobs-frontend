@@ -55,6 +55,7 @@ function handleCadastroConcluido() {
 .content {
   width: 500px;
   flex: 1;
+  margin-bottom: 30px;
 }
 
 .content-wrapper {
@@ -86,7 +87,7 @@ label {
 
 .tipos {
   width: 100%;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .tipos .inputs {

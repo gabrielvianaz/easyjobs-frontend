@@ -251,4 +251,12 @@ function erroConcluirCadastroHandler(erro: any) {
 form {
   width: 100%;
 }
+
+form div:last-of-type {
+  margin-bottom: 0;
+}
+
+button {
+  margin-bottom: 10px;
+}
 </style>
